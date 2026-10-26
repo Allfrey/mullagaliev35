@@ -18,6 +18,7 @@ namespace mullagaliev35
     /// <summary>
     /// Логика взаимодействия для ServicePage.xaml
     /// </summary>
+    
     public partial class ServicePage : Page
     {
         public ServicePage()
@@ -28,16 +29,23 @@ namespace mullagaliev35
             ComboType.SelectedIndex = 0;
             UpdateServices();
         }
+        int CountRecords;
+        int CountPage;
+        int CurrentPage = 0;
+        List<Service> CurrentPageList = new List<Service>();
+        List<Service> TableList;
         private void UpdateServices()
         {
-            var currentServices = Муллагалиев_автосервисEntities.GetContext().Service.ToList();
+                var currentServices = Муллагалиев_автосервисEntities.GetContext().Service.ToList();
                     if (ComboType.SelectedIndex == 0)
                     {
-                        currentServices = currentServices.Where(p => (p.Discount >= 0 && p.Discount <= 1.0)).ToList();
+                        // Берем все услуги, где скидка от 0 до 100% (или null, что приравнивается к 0)
+                        currentServices = currentServices.Where(p => (p.Discount ?? 0) >= 0 && (p.Discount ?? 0) <= 1.0).ToList();
                     }
                     if (ComboType.SelectedIndex == 1)
                     {
-                        currentServices = currentServices.Where(p => (p.Discount >= 0 && p.Discount < 0.5)).ToList();
+                        // Берем все услуги, где скидка от 0 до 50% (включая null)
+                        currentServices = currentServices.Where(p => (p.Discount ?? 0) >= 0 && (p.Discount ?? 0) < 0.5).ToList();
                     }
                     if (ComboType.SelectedIndex == 2)
                     {
@@ -65,7 +73,10 @@ namespace mullagaliev35
                 currentServices = currentServices.OrderBy(p => p.Cost).ToList();
             }
             ServiceListView.ItemsSource = currentServices;
+            TableList = currentServices;
+            ChangePage(0, 0);
         }
+
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
@@ -112,6 +123,7 @@ namespace mullagaliev35
                 Муллагалиев_автосервисEntities.GetContext().ChangeTracker.Entries().ToList().ForEach(p => p.Reload());
                 ServiceListView.ItemsSource = Муллагалиев_автосервисEntities.GetContext().Service.ToList();
             }
+            UpdateServices();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -141,6 +153,99 @@ namespace mullagaliev35
                     }
                 }
             }
+        }
+
+        private void LeftDirButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangePage(1, null);
+        }
+
+        private void RightDirButton_Click(object sender, RoutedEventArgs e)
+        {
+            ChangePage(2, null);
+        }
+        private void ChangePage(int direction,int? selectedPage)
+        {
+            CurrentPageList.Clear();
+            CountRecords = TableList.Count;
+            if (CountRecords % 10 > 0)
+            {
+                CountPage = CountRecords / 10 + 1;
+            }
+            else
+            {
+                CountPage = CountRecords / 10;
+            }
+            Boolean Ifupdate = true;
+            int min;
+            if (selectedPage.HasValue)
+            {
+                if (selectedPage >= 0 && selectedPage <= CountPage)
+                {
+                    CurrentPage = (int)selectedPage;
+                    min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                    for (int i = CurrentPage * 10; i < min; i++)
+                    {
+                        CurrentPageList.Add(TableList[i]);
+                    }
+                }
+            }
+            else
+            {
+                switch (direction)
+                {
+                    case 1:
+                        if (CurrentPage > 0)
+                        {
+                            CurrentPage--;
+                            min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                            for (int i = CurrentPage * 10; i < min; i++)
+                            {
+                                CurrentPageList.Add(TableList[i]);
+                            }
+                        }
+                        else
+                        {
+                            Ifupdate = false;
+                        }
+                        break;
+                    case 2:
+                        if (CurrentPage < CountPage - 1)
+                        {
+                            CurrentPage++;
+                            min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                            for (int i = CurrentPage * 10; i < min; i++)
+                            {
+                                CurrentPageList.Add(TableList[i]);
+                            }
+                        }
+                        else
+                        {
+                                Ifupdate = false;
+                        }
+                        break;
+                }
+
+            }
+            if (Ifupdate)
+            {
+                PageListBox.Items.Clear();
+                for (int i = 1; i <= CountPage; i++)
+                {
+                    PageListBox.Items.Add(i);
+                }
+                PageListBox.SelectedIndex = CountPage;
+                min = CurrentPage * 10 + 10 < CountRecords ? CurrentPage * 10 + 10 : CountRecords;
+                TBCount.Text = min.ToString();
+                TBAllRecords.Text = " из " + CountRecords.ToString();
+                ServiceListView.ItemsSource = CurrentPageList;
+                ServiceListView.Items.Refresh();
+            }
+        }
+
+        private void PageListBox_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ChangePage(0, Convert.ToInt32(PageListBox.SelectedItem.ToString()) - 1);
         }
     }
 }
