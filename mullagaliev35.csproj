@@ -119,8 +119,8 @@
     <Compile Include="ServicePhoto.cs">
       <DependentUpon>MullagalievModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="sysdiagrams.cs">
-      <DependentUpon>MullagalievModel.tt</DependentUpon>
+    <Compile Include="SignUpPage.xaml.cs">
+      <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tag.cs">
       <DependentUpon>MullagalievModel.tt</DependentUpon>
@@ -149,6 +149,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="SignUpPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -172,6 +176,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>MullagalievModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="App.Config" />
     <None Include="MullagalievModel.edmx.diagram">
       <DependentUpon>MullagalievModel.edmx</DependentUpon>
     </None>
@@ -182,19 +187,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="MullagalievModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>MullagalievModel.Context.cs</LastGenOutput>
-      <DependentUpon>MullagalievModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="MullagalievModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>MullagalievModel.edmx</DependentUpon>
-      <LastGenOutput>MullagalievModel.cs</LastGenOutput>
-    </Content>
     <Resource Include="Услуги автосервиса\diz.jpg" />
     <Resource Include="Услуги автосервиса\rulevoe-upravlenie-avtomobilya.jpg" />
     <Resource Include="Услуги автосервиса\transmission.jpg" />
@@ -222,6 +214,18 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MullagalievModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MullagalievModel.edmx</DependentUpon>
+      <LastGenOutput>MullagalievModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="MullagalievModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>MullagalievModel.edmx</DependentUpon>
+      <LastGenOutput>MullagalievModel.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

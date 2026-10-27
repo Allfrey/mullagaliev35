@@ -15,7 +15,7 @@ namespace mullagaliev35
     
     public partial class Муллагалиев_автосервисEntities : DbContext
     {
-        public static Муллагалиев_автосервисEntities _context;
+        private static Муллагалиев_автосервисEntities _context;
         public static Муллагалиев_автосервисEntities GetContext()
         {
             if (_context == null)
@@ -42,7 +42,6 @@ namespace mullagaliev35
         public virtual DbSet<ProductSale> ProductSale { get; set; }
         public virtual DbSet<Service> Service { get; set; }
         public virtual DbSet<ServicePhoto> ServicePhoto { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Tag> Tag { get; set; }
     }
 }
